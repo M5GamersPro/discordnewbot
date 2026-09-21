@@ -141,6 +141,16 @@ model ScheduledAnnouncement {
   @@index([runAt, sentAt])
 }
 
+model AntiRaidConfig {
+  id            String   @id @default(cuid())
+  guildId       String   @unique
+  enabled       Boolean  @default(false)
+  joinThreshold Int      @default(10)
+  windowSeconds Int      @default(30)
+  action        String   @default("kick")
+  updatedAt     DateTime @updatedAt
+}
+
 model AuditLog {
   id        String   @id @default(cuid())
   guildId   String
@@ -149,4 +159,17 @@ model AuditLog {
   metadata  String?
   createdAt DateTime @default(now())
   @@index([guildId, createdAt])
+}
+
+model UserLevel {
+  id       String    @id @default(cuid())
+  guildId  String
+  userId   String
+  xp       Int       @default(0)
+  level    Int       @default(0)
+  lastXpAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([guildId, userId])
+  @@index([guildId, xp])
 }
