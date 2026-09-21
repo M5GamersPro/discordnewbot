@@ -1,28 +1,35 @@
-model Warning {
+model ReactionRole {
   id        String   @id @default(cuid())
   guildId   String
-  userId    String
-  moderatorId String
-  reason    String
+  channelId String
+  messageId String
+  emoji     String
+  roleId    String
   createdAt DateTime @default(now())
-  @@index([guildId, userId])
+  @@unique([guildId, messageId, emoji])
 }
 
-model AutoModConfig {
-  id              String   @id @default(cuid())
-  guildId         String   @unique
-  enabled          Boolean  @default(false)
-  antiInvite       Boolean  @default(true)
-  antiLinks       Boolean  @default(false)
-  bannedWords      String   @default("")
-  logChannelId     String?
-  updatedAt        DateTime @updatedAt
+model VerificationConfig {
+  id        String   @id @default(cuid())
+  guildId   String   @unique
+  channelId String
+  messageId String
+  roleId    String
 }
 
-model WelcomeConfig {
-  id          String   @id @default(cuid())
-  guildId     String   @unique
-  enabled     Boolean  @default(false)
-  channelId   String?
-  message     String   @default("Welcome {user} to {server}!")
+model Giveaway {
+  id        String   @id @default(cuid())
+  guildId   String
+  channelId String
+  messageId String
+  prize     String
+  winners   Int
+  endsAt    DateTime
+  createdAt DateTime @default(now())
+}
+
+model LogChannel {
+  id        String   @id @default(cuid())
+  guildId   String   @unique
+  channelId String
 }
