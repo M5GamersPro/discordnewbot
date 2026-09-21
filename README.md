@@ -1,6 +1,14 @@
-# Discord System Bot
+# Expanded Discord system bot
 
-A modular Node.js/TypeScript Discord bot with a persistent private ticket system.
+This project now includes a foundation similar to an all-in-one utility bot:
+
+- Private ticket system with setup, claim, close, add, and remove controls
+- Moderation: warnings, warning history, timeouts, and bulk message deletion
+- AutoMod: Discord invite blocking, link blocking, and configurable banned words
+- Welcome messages with `{user}` and `{server}` placeholders
+- Server settings command
+- Persistent PostgreSQL storage through Prisma
+- Modular `src/commands`, `src/services`, and `src/events` architecture
 
 ## Setup
 
@@ -13,13 +21,13 @@ npm run register
 npm run dev
 ```
 
-The bot needs the **bot** and **applications.commands** scopes. Give it `Manage Channels`, `Send Messages`, `Embed Links`, `Read Message History`, and `Manage Roles` where appropriate.
+Enable the **Message Content Intent** in the Discord Developer Portal for AutoMod. The bot needs `Manage Channels`, `Manage Messages`, `Moderate Members`, `Manage Guild`, `Send Messages`, and `Embed Links` as appropriate.
 
-## Ticket setup
+## Commands
 
-1. Set `SUPPORT_ROLE_ID` and optionally `TICKET_CATEGORY_ID` in `.env`.
-2. Start the bot.
-3. Run `/ticket setup` in the channel where the panel should be posted.
-4. Members can create one open ticket each.
+- `/ticket setup|close|claim|add|remove`
+- `/moderation warn|warnings|timeout|purge`
+- `/admin automod|welcome|settings`
+- `/ping`, `/serverinfo`
 
-Commands include `/ticket setup`, `/ticket close`, `/ticket claim`, `/ticket add`, `/ticket remove`, `/ping`, and `/serverinfo`.
+This is an original implementation inspired by common utility-bot functionality; it does not copy proprietary code or branding from other bots.
