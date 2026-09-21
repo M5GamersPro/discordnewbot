@@ -1,20 +1,59 @@
-# Premium Discord System Bot
+# Discord System Bot
 
-A Node.js + TypeScript Discord utility bot with tickets, moderation, AutoMod, verification, reaction roles, giveaways, logs, premium feature flags, and custom commands.
+A modular **Node.js + TypeScript Discord bot** for communities that need support, moderation, automation, leveling, and music in one place.
 
-## Free database: SQLite
+> This is an original utility bot implementation. It is not affiliated with or a copy of Nova, ProBot, DealerBot, or any other Discord bot.
 
-This project uses **SQLite**, not MongoDB and not a paid database service. SQLite is free, requires no account, and stores the database in a local file.
+## Features
 
-The default configuration is:
+### Support and administration
 
-```env
-DATABASE_URL="file:./dev.db"
-```
+- Private ticket channels
+- Ticket claim, close, add, and remove controls
+- Persistent SQLite configuration through Prisma
+- Server logs for joins, leaves, and deleted messages
+- Verification panels and reaction roles
+- Giveaways
 
-Prisma creates the database file when you run the setup commands. For a single bot process or small deployment, SQLite is simple and reliable. If you later run multiple bot instances or need high availability, migrate to a managed PostgreSQL provider such as Neon or Supabase.
+### Moderation and safety
 
-## Setup
+- Warnings and warning history
+- Member timeouts
+- Message purge
+- AutoMod invite and link protection
+- Configurable banned words
+- Permission-gated administration commands
+
+### XP leveling
+
+- Earn XP from messages
+- One-minute anti-spam XP cooldown
+- Automatic level calculation
+- Level-up announcements
+- `/rank [user]`
+- `/leaderboard`
+
+XP is stored locally per server and user. The level formula uses `level² × 100` as the next-level threshold.
+
+### Music
+
+- `/music play query:<song or URL>`
+- `/music skip`
+- `/music pause`
+- `/music resume`
+- `/music queue`
+- `/music stop`
+
+Music uses `@discordjs/voice` and `play-dl`. The bot needs **Connect**, **Speak**, and **View Channel** permissions in the voice channel. Music queues are held in memory and are cleared when the bot restarts.
+
+## Requirements
+
+- Node.js 20 or newer
+- A Discord application and bot token
+- Message Content Intent enabled for AutoMod and XP messages
+- A free local SQLite database
+
+## Installation
 
 ```bash
 npm install
@@ -22,22 +61,68 @@ cp .env.example .env
 npx prisma generate
 npx prisma db push
 npm run register
+npm run build
+npm start
+```
+
+For development:
+
+```bash
 npm run dev
 ```
 
-Never commit `.env`, `prisma/dev.db`, or a Discord token. Use a private environment variable for `DISCORD_TOKEN`.
+## Environment variables
 
-## Main features
+```env
+DISCORD_TOKEN=your_private_bot_token
+DISCORD_CLIENT_ID=your_application_id
+DISCORD_GUILD_ID=your_test_server_id
+DATABASE_URL="file:./dev.db"
+SUPPORT_ROLE_ID=optional_support_role_id
+LOGS_CHANNEL_ID=optional_logs_channel_id
+TICKET_CATEGORY_ID=optional_ticket_category_id
+BOT_OWNER_ID=optional_owner_id
+PROBOT_CREDITS_REQUIRED=2000000
+```
 
-- Private tickets with claim, close, add, and remove controls
-- Warnings, warning history, timeouts, and message purge
-- AutoMod for invites, links, and banned words
-- Welcome messages and verification panels
-- Reaction roles, giveaways, and event logging
-- Premium entitlement and feature flags
-- Premium custom commands
-- SQLite persistence through Prisma
+`DISCORD_GUILD_ID` makes command registration immediate for one test server. Leave it empty for global commands, which can take time to appear.
 
-## Premium payments and customer tokens
+## Database
 
-The bot does not accept tokens through Discord commands or DMs. A customer deployment should receive its token through a private hosting provider secret or `.env` file. Payment activation must use a trusted, server-to-server payment verification flow; a user-entered reference must never activate premium by itself.
+SQLite is free, local, and requires no MongoDB account or paid database hosting. The file is created at `prisma/dev.db` by Prisma and is ignored by Git. Back it up before moving the bot to another machine.
+
+SQLite is ideal for one bot process and small-to-medium communities. If you later need multiple bot instances, high availability, or a web dashboard with concurrent traffic, migrate the Prisma datasource to PostgreSQL.
+
+## Security
+
+- Never commit `.env` or expose `DISCORD_TOKEN`.
+- Never ask users to send bot tokens through Discord commands or DMs.
+- Payment references must be verified server-to-server before premium access is activated.
+- Give the bot only the permissions and intents it needs.
+- Keep the bot's role below roles it should not manage.
+
+## Project structure
+
+```text
+prisma/schema.prisma
+src/
+├── commands/       Slash commands
+├── database/       Prisma client
+├── events/         Discord event handlers
+├── lib/            Logging and embeds
+└── services/       Tickets, moderation, leveling, music, and premium logic
+```
+
+## Useful commands
+
+```bash
+npm run db:generate   # Generate Prisma client
+npm run db:push      # Apply schema to SQLite
+npm run db:studio    # Browse local data
+npm run register     # Register slash commands
+npm run build        # Type-check and compile
+```
+
+## License
+
+Use and modify this project for your own bot. Review third-party package licenses and Discord's developer policies before deploying publicly.

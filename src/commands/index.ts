@@ -9,7 +9,9 @@ import { verificationCommand } from './verification.js';
 import { giveawayCommand } from './giveaway.js';
 import { logsCommand } from './logs.js';
 import { utilityCommands } from './utility.js';
+import { levelingCommands } from './leveling.js';
+import { musicCommand } from './music.js';
 
-export const commands = [premiumCommand, customCommand, ticketCommand, moderationCommand, adminCommand, reactionRoleCommand, verificationCommand, giveawayCommand, logsCommand, ...utilityCommands];
+export const commands = [premiumCommand, customCommand, ticketCommand, moderationCommand, adminCommand, reactionRoleCommand, verificationCommand, giveawayCommand, logsCommand, musicCommand, ...levelingCommands, ...utilityCommands];
 export type BotCommand = (typeof commands)[number];
 export function commandData() { return commands.map(command => command.data.toJSON()); }

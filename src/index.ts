@@ -12,7 +12,7 @@ import { handleMemberLeave } from './events/guildMemberRemove.js';
 import { logger } from './lib/logger.js';
 import { disconnectDatabase } from './database/prisma.js';
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.DirectMessages] });
 registerReady(client);
 registerGuildMemberAdd(client);
 client.on('interactionCreate', handleInteraction);
