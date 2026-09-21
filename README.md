@@ -1,33 +1,43 @@
-# Premium stage
+# Premium Discord System Bot
 
-This project now has a premium foundation for servers that purchase a plan priced at **2,000,000 ProBot credits**.
+A Node.js + TypeScript Discord utility bot with tickets, moderation, AutoMod, verification, reaction roles, giveaways, logs, premium feature flags, and custom commands.
 
-## Important payment and token safety
+## Free database: SQLite
 
-- The bot does **not** accept Discord bot tokens through commands, DMs, forms, or chat.
-- Put the token for a deployment in that deployment's private `.env` file as `DISCORD_TOKEN`.
-- Never commit `.env`, publish a token, or send it to another person.
-- `payment-reference` is only a placeholder until you connect a trusted payment provider or your own verified ProBot-credit payment service. A user-supplied reference must never activate premium by itself.
-- A separate customer deployment is safer than running arbitrary customer tokens in one shared process.
+This project uses **SQLite**, not MongoDB and not a paid database service. SQLite is free, requires no account, and stores the database in a local file.
 
-## Premium systems added
+The default configuration is:
 
-- `/premium status` for entitlement status
-- `/premium activate payment-reference:<reference>` placeholder for verified payments
-- `/premium feature name:<name> enabled:<true|false>` feature flags
-- `/custom-command add` and `/custom-command remove`
-- Premium entitlement, feature, custom command, scheduling, and audit-log database models
-- Configurable required price using `PROBOT_CREDITS_REQUIRED=2000000`
+```env
+DATABASE_URL="file:./dev.db"
+```
 
-## Advanced next-stage modules
+Prisma creates the database file when you run the setup commands. For a single bot process or small deployment, SQLite is simple and reliable. If you later run multiple bot instances or need high availability, migrate to a managed PostgreSQL provider such as Neon or Supabase.
 
-The architecture is ready for a verified payment webhook, a customer dashboard, scheduled announcements, analytics, economy/XP, anti-raid controls, and tenant provisioning. These should be added behind the same entitlement service instead of trusting user input.
-
-Run:
+## Setup
 
 ```bash
+npm install
+cp .env.example .env
 npx prisma generate
 npx prisma db push
 npm run register
-npm run build
+npm run dev
 ```
+
+Never commit `.env`, `prisma/dev.db`, or a Discord token. Use a private environment variable for `DISCORD_TOKEN`.
+
+## Main features
+
+- Private tickets with claim, close, add, and remove controls
+- Warnings, warning history, timeouts, and message purge
+- AutoMod for invites, links, and banned words
+- Welcome messages and verification panels
+- Reaction roles, giveaways, and event logging
+- Premium entitlement and feature flags
+- Premium custom commands
+- SQLite persistence through Prisma
+
+## Premium payments and customer tokens
+
+The bot does not accept tokens through Discord commands or DMs. A customer deployment should receive its token through a private hosting provider secret or `.env` file. Payment activation must use a trusted, server-to-server payment verification flow; a user-entered reference must never activate premium by itself.

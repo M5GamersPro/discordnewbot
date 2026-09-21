@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -42,14 +42,14 @@ model Warning {
 }
 
 model AutoModConfig {
-  id          String   @id @default(cuid())
-  guildId     String   @unique
-  enabled     Boolean  @default(false)
-  antiInvite  Boolean  @default(true)
-  antiLinks   Boolean  @default(false)
-  bannedWords String   @default("")
+  id           String   @id @default(cuid())
+  guildId      String   @unique
+  enabled      Boolean  @default(false)
+  antiInvite   Boolean  @default(true)
+  antiLinks    Boolean  @default(false)
+  bannedWords  String   @default("")
   logChannelId String?
-  updatedAt   DateTime @updatedAt
+  updatedAt    DateTime @updatedAt
 }
 
 model WelcomeConfig {
@@ -97,25 +97,25 @@ model LogChannel {
 }
 
 model PremiumEntitlement {
-  id             String   @id @default(cuid())
-  guildId        String   @unique
-  plan           String   @default("premium")
-  active         Boolean  @default(false)
-  paymentRef     String?  @unique
-  purchaserId    String?
-  creditsRequired Int     @default(2000000)
-  activatedAt    DateTime?
-  expiresAt      DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(cuid())
+  guildId         String   @unique
+  plan            String   @default("premium")
+  active          Boolean  @default(false)
+  paymentRef      String?  @unique
+  purchaserId     String?
+  creditsRequired Int      @default(2000000)
+  activatedAt     DateTime?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model PremiumFeature {
-  id        String   @id @default(cuid())
-  guildId   String
-  feature   String
-  enabled   Boolean  @default(true)
-  settings  Json?
+  id       String   @id @default(cuid())
+  guildId  String
+  feature  String
+  enabled  Boolean  @default(true)
+  settings String?
   updatedAt DateTime @updatedAt
   @@unique([guildId, feature])
 }
@@ -146,7 +146,7 @@ model AuditLog {
   guildId   String
   actorId   String?
   action    String
-  metadata  Json?
+  metadata  String?
   createdAt DateTime @default(now())
   @@index([guildId, createdAt])
 }
