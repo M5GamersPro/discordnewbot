@@ -1,21 +1,24 @@
 {
   "name": "discord-system-bot",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "register": "tsx src/deployCommands.ts",
+    "register": "node deploy-commands.ts",
+    "clear": "node clear-commands.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@discordjs/voice": "^0.17.0",
     "@prisma/client": "^5.22.0",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
+    "play-dl": "^1.9.7",
     "prisma": "^5.22.0"
   },
   "devDependencies": {
