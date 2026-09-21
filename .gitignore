@@ -11,3 +11,6 @@ prisma/*.db-journal
 .vscode/
 .idea/
 *.tsbuildinfo
+deployments/*/.env
+deployments/*/*.db
+deployments/*/*.db-journal

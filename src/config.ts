@@ -15,5 +15,5 @@ export const config = {
   ticketCategoryId: process.env.TICKET_CATEGORY_ID,
   logsChannelId: process.env.LOGS_CHANNEL_ID,
   ownerId: process.env.BOT_OWNER_ID,
-  premiumCreditsRequired: Number(process.env.PROBOT_CREDITS_REQUIRED ?? 2_000_000),
+  premiumCreditsRequired: Number(process.env.PROBOT_CREDITS_REQUIRED ?? 20_000_000),
 };

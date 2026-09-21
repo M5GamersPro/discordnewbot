@@ -1,6 +1,6 @@
 {
   "name": "discord-system-bot",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,9 @@
     "register": "tsx src/deployCommands.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "customer:create": "tsx scripts/create-customer-env.ts",
+    "customer:start": "tsx scripts/start-customer.ts"
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",

@@ -19,16 +19,22 @@ export const premiumService = {
     });
   },
   async isFeatureEnabled(guildId: string, feature: string) {
-    const ent = await this.getStatus(guildId);
-    const featureRow = await prisma.premiumFeature.findUnique({ where: { guildId_feature: { guildId, feature } } });
-    return this.isActive(ent) && (featureRow?.enabled ?? true);
+    const [entitlement, featureRow] = await Promise.all([
+      this.getStatus(guildId),
+      prisma.premiumFeature.findUnique({ where: { guildId_feature: { guildId, feature } } }),
+    ]);
+    return this.isActive(entitlement) && (featureRow?.enabled ?? true);
   },
-  async activate(guildId: string, purchaserId: string, paymentRef: string) {
-    if (!paymentRef || paymentRef.length < 8) return { ok: false, message: 'Invalid payment reference.' };
-    const required = Number(process.env.PROBOT_CREDITS_REQUIRED ?? config.premiumCreditsRequired ?? 2000000);
-    return {
-      ok: false,
-      message: `Payment reference received and queued for validation. Verified premium activation requires a trusted server-side payment provider. Required credits: ${required.toLocaleString()}.`,
-    };
+  async grant(guildId: string, purchaserId: string, paymentRef: string) {
+    if (!paymentRef.trim()) throw new Error('A privately verified payment reference is required.');
+    return prisma.premiumEntitlement.upsert({
+      where: { guildId },
+      update: { active: true, plan: 'premium', paymentRef, purchaserId, creditsRequired: config.premiumCreditsRequired, activatedAt: new Date(), expiresAt: null },
+      create: { guildId, active: true, plan: 'premium', paymentRef, purchaserId, creditsRequired: config.premiumCreditsRequired, activatedAt: new Date() },
+    });
+  },
+  async revoke(guildId: string, actorId: string) {
+    await prisma.auditLog.create({ data: { guildId, actorId, action: 'premium.revoke' } });
+    return prisma.premiumEntitlement.updateMany({ where: { guildId }, data: { active: false } });
   },
 };
