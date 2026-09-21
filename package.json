@@ -1,13 +1,17 @@
 {
   "name": "discord-system-bot",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "register": "tsx src/deployCommands.ts",
+    "register": "tsx deploy-commands.ts",
+    "clear": "tsx clear-commands.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
