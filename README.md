@@ -1,33 +1,33 @@
-# Expanded Discord system bot
+# Premium stage
 
-This project now includes a foundation similar to an all-in-one utility bot:
+This project now has a premium foundation for servers that purchase a plan priced at **2,000,000 ProBot credits**.
 
-- Private ticket system with setup, claim, close, add, and remove controls
-- Moderation: warnings, warning history, timeouts, and bulk message deletion
-- AutoMod: Discord invite blocking, link blocking, and configurable banned words
-- Welcome messages with `{user}` and `{server}` placeholders
-- Server settings command
-- Persistent PostgreSQL storage through Prisma
-- Modular `src/commands`, `src/services`, and `src/events` architecture
+## Important payment and token safety
 
-## Setup
+- The bot does **not** accept Discord bot tokens through commands, DMs, forms, or chat.
+- Put the token for a deployment in that deployment's private `.env` file as `DISCORD_TOKEN`.
+- Never commit `.env`, publish a token, or send it to another person.
+- `payment-reference` is only a placeholder until you connect a trusted payment provider or your own verified ProBot-credit payment service. A user-supplied reference must never activate premium by itself.
+- A separate customer deployment is safer than running arbitrary customer tokens in one shared process.
+
+## Premium systems added
+
+- `/premium status` for entitlement status
+- `/premium activate payment-reference:<reference>` placeholder for verified payments
+- `/premium feature name:<name> enabled:<true|false>` feature flags
+- `/custom-command add` and `/custom-command remove`
+- Premium entitlement, feature, custom command, scheduling, and audit-log database models
+- Configurable required price using `PROBOT_CREDITS_REQUIRED=2000000`
+
+## Advanced next-stage modules
+
+The architecture is ready for a verified payment webhook, a customer dashboard, scheduled announcements, analytics, economy/XP, anti-raid controls, and tenant provisioning. These should be added behind the same entitlement service instead of trusting user input.
+
+Run:
 
 ```bash
-npm install
-cp .env.example .env
 npx prisma generate
 npx prisma db push
 npm run register
-npm run dev
+npm run build
 ```
-
-Enable the **Message Content Intent** in the Discord Developer Portal for AutoMod. The bot needs `Manage Channels`, `Manage Messages`, `Moderate Members`, `Manage Guild`, `Send Messages`, and `Embed Links` as appropriate.
-
-## Commands
-
-- `/ticket setup|close|claim|add|remove`
-- `/moderation warn|warnings|timeout|purge`
-- `/admin automod|welcome|settings`
-- `/ping`, `/serverinfo`
-
-This is an original implementation inspired by common utility-bot functionality; it does not copy proprietary code or branding from other bots.

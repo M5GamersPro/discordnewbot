@@ -1,3 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GuildConfig {
+  id                 String   @id @default(cuid())
+  guildId            String   @unique
+  supportRoleId      String?
+  ticketCategoryId   String?
+  ticketLogChannelId String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Ticket {
+  id          String    @id @default(cuid())
+  guildId     String
+  channelId   String    @unique
+  creatorId   String
+  claimedById String?
+  status      String    @default("open")
+  closeReason String?
+  closedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@index([guildId, creatorId, status])
+}
+
+model Warning {
+  id          String   @id @default(cuid())
+  guildId     String
+  userId      String
+  moderatorId String
+  reason      String
+  createdAt   DateTime @default(now())
+  @@index([guildId, userId])
+}
+
+model AutoModConfig {
+  id          String   @id @default(cuid())
+  guildId     String   @unique
+  enabled     Boolean  @default(false)
+  antiInvite  Boolean  @default(true)
+  antiLinks   Boolean  @default(false)
+  bannedWords String   @default("")
+  logChannelId String?
+  updatedAt   DateTime @updatedAt
+}
+
+model WelcomeConfig {
+  id        String  @id @default(cuid())
+  guildId   String  @unique
+  enabled   Boolean @default(false)
+  channelId String?
+  message   String  @default("Welcome {user} to {server}!")
+}
+
 model ReactionRole {
   id        String   @id @default(cuid())
   guildId   String
@@ -10,8 +72,8 @@ model ReactionRole {
 }
 
 model VerificationConfig {
-  id        String   @id @default(cuid())
-  guildId   String   @unique
+  id        String @id @default(cuid())
+  guildId   String @unique
   channelId String
   messageId String
   roleId    String
@@ -29,7 +91,62 @@ model Giveaway {
 }
 
 model LogChannel {
-  id        String   @id @default(cuid())
-  guildId   String   @unique
+  id        String @id @default(cuid())
+  guildId   String @unique
   channelId String
+}
+
+model PremiumEntitlement {
+  id             String   @id @default(cuid())
+  guildId        String   @unique
+  plan           String   @default("premium")
+  active         Boolean  @default(false)
+  paymentRef     String?  @unique
+  purchaserId    String?
+  creditsRequired Int     @default(2000000)
+  activatedAt    DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model PremiumFeature {
+  id        String   @id @default(cuid())
+  guildId   String
+  feature   String
+  enabled   Boolean  @default(true)
+  settings  Json?
+  updatedAt DateTime @updatedAt
+  @@unique([guildId, feature])
+}
+
+model CustomCommand {
+  id        String   @id @default(cuid())
+  guildId   String
+  name      String
+  response  String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  @@unique([guildId, name])
+}
+
+model ScheduledAnnouncement {
+  id        String   @id @default(cuid())
+  guildId   String
+  channelId String
+  content   String
+  runAt     DateTime
+  sentAt    DateTime?
+  createdAt DateTime @default(now())
+  @@index([runAt, sentAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  guildId   String
+  actorId   String?
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  @@index([guildId, createdAt])
 }
