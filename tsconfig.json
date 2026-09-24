@@ -8,10 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "deploy-commands.ts", "clear-commands.ts"],
-  "exclude": ["node_modules", "dist", "deployments"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "deployments", "scripts"]
 }
