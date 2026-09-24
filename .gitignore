@@ -6,11 +6,12 @@ dist/
 *.log
 .DS_Store
 coverage/
-prisma/*.db
-prisma/*.db-journal
 .vscode/
 .idea/
 *.tsbuildinfo
+data/
+prisma/*.db
+prisma/*.db-journal
 deployments/*/.env
 deployments/*/*.db
 deployments/*/*.db-journal

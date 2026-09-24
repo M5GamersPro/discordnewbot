@@ -1,32 +1,28 @@
 {
   "name": "discord-system-bot",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "register": "tsx deploy-commands.ts",
+    "register": "tsx src/deployCommands.ts",
     "clear": "tsx clear-commands.ts",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:studio": "prisma studio",
+    "db:init": "tsx scripts/init-db.ts",
     "customer:create": "tsx scripts/create-customer-env.ts",
     "customer:start": "tsx scripts/start-customer.ts"
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "@prisma/client": "^5.22.0",
+    "better-sqlite3": "^11.7.0",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
-    "play-dl": "^1.9.7",
-    "prisma": "^5.22.0"
+    "play-dl": "^1.9.7"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.10.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.2"

@@ -10,7 +10,7 @@ export const config = {
   token: required('DISCORD_TOKEN'),
   clientId: required('DISCORD_CLIENT_ID'),
   guildId: process.env.DISCORD_GUILD_ID,
-  databaseUrl: required('DATABASE_URL'),
+  databaseUrl: process.env.DATABASE_URL ?? 'file:./data/bot.db',
   supportRoleId: process.env.SUPPORT_ROLE_ID,
   ticketCategoryId: process.env.TICKET_CATEGORY_ID,
   logsChannelId: process.env.LOGS_CHANNEL_ID,
