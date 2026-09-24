@@ -1,33 +1,29 @@
-import { GuildMember, Message } from 'discord.js';
+import { Events, GuildMember } from 'discord.js';
 import { prisma } from '../database/prisma.js';
 import { antiRaidService } from '../services/antiRaidService.js';
-import { customCommandService } from '../services/customCommandService.js';
 
-export async function handleMemberJoin(member: GuildMember) {
-  const config = await prisma.logChannel.findUnique({ where: { guildId: member.guild.id } });
-  if (config) {
-    const channel = member.guild.channels.cache.get(config.channelId);
-    if (channel && 'isTextBased' in channel && channel.isTextBased()) {
-      await channel.send(`👋 **${member.user.tag}** joined the server.`);
-    }
-  }
-  const raidTriggered = await antiRaidService.check(member.guild.id);
-  if (raidTriggered) {
-    await member.kick('Anti-raid protection triggered.');
-    const modLog = member.guild.channels.cache.get(config?.channelId ?? '');
-    if (modLog && 'isTextBased' in modLog && modLog.isTextBased()) {
-      await modLog.send(`🚨 Anti-raid protection triggered for **${member.user.tag}**.`);
-    }
-    await antiRaidService.clear(member.guild.id);
-  }
+export function registerGuildMemberAdd(client: any) {
+  client.on(Events.GuildMemberAdd, handleMemberJoin);
 }
 
-export async function handleMessage(message: Message) {
-  if (!message.guild || message.author.bot) return;
-  const customCommand = await prisma.customCommand.findUnique({
-    where: { guildId_name: { guildId: message.guild.id, name: message.content.trim().replace(/^!/, '').toLowerCase() } },
-  });
-  if (customCommand && customCommand.enabled) {
-    await message.reply(customCommand.response);
+export async function handleMemberJoin(member: GuildMember) {
+  const logConfig = await prisma.logChannel.findUnique({ where: { guildId: member.guild.id } }).catch(() => null);
+  if (logConfig) {
+    const channel = member.guild.channels.cache.get(logConfig.channelId);
+    if (channel?.isTextBased()) await channel.send(`👋 **${member.user.tag}** joined the server.`).catch(() => undefined);
   }
+
+  const raidTriggered = await antiRaidService.check(member.guild.id);
+  if (!raidTriggered) return;
+
+  const raidConfig = await antiRaidService.getConfig(member.guild.id);
+  if (raidConfig?.action === 'ban' && member.bannable) await member.ban({ reason: 'Anti-raid protection triggered.' });
+  else if (raidConfig?.action === 'timeout' && member.moderatable) await member.timeout(10 * 60_000, 'Anti-raid protection triggered.');
+  else if (member.kickable) await member.kick('Anti-raid protection triggered.');
+
+  if (logConfig) {
+    const channel = member.guild.channels.cache.get(logConfig.channelId);
+    if (channel?.isTextBased()) await channel.send(`🚨 Anti-raid action applied to **${member.user.tag}**.`).catch(() => undefined);
+  }
+  await antiRaidService.clear(member.guild.id);
 }
